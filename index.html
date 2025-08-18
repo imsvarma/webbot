@@ -3,130 +3,95 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AI Agent Bot — Neo UI</title>
+  <title>AI Agent Bot — Live</title>
 
-  <!-- n8n Chat styles -->
+  <!-- n8n Chat styles (required for widget) -->
   <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
 
   <style>
+    /* Reset + base */
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial; color: #e5e7eb; background: radial-gradient(900px 500px at 10% 10%, #0c1534 0%, #0b1020 60%), linear-gradient(135deg, #0a1022, #0a0f1f); }
+
+    /* Layout */
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 20px 80px; }
+    .hero { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 26px; backdrop-filter: blur(8px); box-shadow: 0 12px 30px rgba(0,0,0,.35); }
+    .title { margin: 0 0 8px; font-weight: 900; font-size: clamp(28px, 4vw, 44px); letter-spacing: .2px; }
+    .subtitle { margin: 0 0 16px; color: #cbd5e1; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 16px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    ul { margin: 8px 0 0; padding-left: 18px; }
+    footer { text-align:center; color:#94a3b8; padding: 24px 0; }
+
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+    /* Widget theming via variables (supported by @n8n/chat) */
     :root {
-      --accent-1: #7c3aed;
-      --accent-2: #22d3ee;
-      --bg-1: #0b1020;
-      --bg-2: #111827;
-      --bg-3: #1e293b;
-      --txt-light: #f1f5f9;
-      --txt-dim: #94a3b8;
+      --n8n-chat-primary-color: #7c3aed; /* FAB & accents */
+      --n8n-chat-secondary-color: #0b1020; /* header bg */
+      --n8n-chat-text-color: #0f172a;
+      --n8n-chat-user-bubble: #0f172a;
+      --n8n-chat-bot-bubble: #eef2ff;
+      --n8n-chat-input-bg: #ffffff;
+      --n8n-chat-input-text: #0f172a;
+      --n8n-chat-border: #e5e7eb;
     }
-
-    body { margin:0; font-family: system-ui, sans-serif; background: radial-gradient(circle at 20% 20%, #0f172a, #020617); color: var(--txt-light); }
-
-    /* === Chat widget overrides === */
-    .n8n-chat-window {
-      border-radius: 16px !important;
-      overflow: hidden !important;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.6) !important;
-      font-family: system-ui, sans-serif !important;
-    }
-    .n8n-chat-header {
-      background: linear-gradient(135deg, var(--accent-1), var(--accent-2)) !important;
-      color: white !important;
-      font-weight: 800 !important;
-      padding: 12px 16px !important;
-    }
-    .n8n-chat-title { font-size: 18px !important; }
-    .n8n-chat-subtitle { color: rgba(255,255,255,0.8) !important; }
-
-    .n8n-chat-body {
-      background: linear-gradient(180deg, #0f172a, #1e293b) !important;
-      padding: 12px !important;
-    }
-
-    .n8n-chat-message--user {
-      background: linear-gradient(135deg, var(--accent-1), #5b21b6) !important;
-      color: white !important;
-      border-radius: 12px 12px 0 12px !important;
-      box-shadow: 0 4px 12px rgba(124,58,237,.4) !important;
-    }
-    .n8n-chat-message--bot {
-      background: #1e293b !important;
-      color: #f1f5f9 !important;
-      border-radius: 12px 12px 12px 0 !important;
-      border: 1px solid rgba(255,255,255,0.08) !important;
-      box-shadow: 0 4px 10px rgba(0,0,0,.25) !important;
-    }
-
-    .n8n-chat-input {
-      background: #0f172a !important;
-      border-top: 1px solid #1e293b !important;
-      padding: 8px !important;
-    }
-    .n8n-chat-input textarea {
-      background: #1e293b !important;
-      border: none !important;
-      border-radius: 12px !important;
-      color: #f1f5f9 !important;
-      padding: 10px 12px !important;
-    }
-    .n8n-chat-input textarea::placeholder { color: #94a3b8 !important; }
-
-    .n8n-chat-send-button {
-      background: linear-gradient(135deg, var(--accent-2), #38bdf8) !important;
-      border-radius: 50% !important;
-      width: 38px !important;
-      height: 38px !important;
-      display: grid !important;
-      place-items: center !important;
-      box-shadow: 0 6px 14px rgba(34,211,238,.45) !important;
-    }
-    .n8n-chat-send-button svg { fill: #0f172a !important; }
-
-    .n8n-chat-toggle {
-      background: linear-gradient(135deg, var(--accent-1), var(--accent-2)) !important;
-      border-radius: 50% !important;
-      box-shadow: 0 10px 22px rgba(124,58,237,.45), 0 6px 14px rgba(34,211,238,.35) !important;
-      width: 56px !important; height: 56px !important;
-    }
-    /* --- Hard overrides for the n8n Chat DOM (strong specificity + !important) --- */
-    :root { --neo-user:#0f172a; --neo-user-text:#fff; --neo-bot:#0b1224; --neo-bot-text:#dbeafe; --neo-accent:#7c3aed; --neo-accent-2:#22d3ee; }
-    :where(body) :where(.n8n-chat-toggle){
-      background: linear-gradient(135deg,var(--neo-accent),#5b21b6)!important; box-shadow:0 10px 26px rgba(124,58,237,.45)!important; width:56px!important;height:56px!important;border-radius:20px!important;
-    }
-    :where(body) :where(.n8n-chat-window){ border-radius:18px!important; overflow:hidden!important; box-shadow:0 30px 60px rgba(0,0,0,.5)!important; border:1px solid rgba(255,255,255,.08)!important; }
-    :where(body) :where(.n8n-chat-header){ background:linear-gradient(135deg,#0f172a,#111827)!important; border-bottom:1px solid rgba(255,255,255,.08)!important; }
-    :where(body) :where(.n8n-chat-title){ color:#e5e7eb!important; font-weight:900!important; letter-spacing:.2px!important; }
-    :where(body) :where(.n8n-chat-subtitle){ color:#cbd5e1!important; }
-    :where(body) :where(.n8n-chat-body){ background:linear-gradient(180deg,#0b1020,#0f172a)!important; }
-    :where(body) :where(.n8n-chat-message--user){ background:var(--neo-user)!important; color:var(--neo-user-text)!important; border:1px solid rgba(255,255,255,.06)!important; border-radius:14px!important; }
-    :where(body) :where(.n8n-chat-message--bot){ background:var(--neo-bot)!important; color:var(--neo-bot-text)!important; border:1px solid rgba(96,165,250,.18)!important; border-radius:14px!important; }
-    :where(body) :where(.n8n-chat-input){ background:#0b1020!important; border:1px solid rgba(255,255,255,.12)!important; }
-    :where(body) :where(.n8n-chat-input textarea){ color:#e6eaf2!important; }
-    :where(body) :where(.n8n-chat-input textarea)::placeholder{ color:#94a3b8!important; }
-    :where(body) :where(.n8n-chat-send-button){ background:linear-gradient(135deg,var(--neo-accent-2),#60a5fa)!important; color:#0b1020!important; font-weight:800!important; box-shadow:0 10px 22px rgba(34,211,238,.35)!important; }
-</style>
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <section class="hero">
+      <h1 class="title">AI Agent Bot — Testing</h1>
+      <p class="subtitle">Floating chat is live (bottom-right). This page explains how it connects to your n8n workflow.</p>
+      <div class="grid">
+        <div class="card">
+          <strong>How it’s connected</strong>
+          <ul>
+            <li>Widget loaded from CDN and initialized with <span class="mono">createChat()</span>.</li>
+            <li>Webhook (POST): <span class="mono" id="wh"></span></li>
+            <li>Allowed origin (CORS): <span class="mono" id="origin"></span></li>
+            <li>Response JSON shape: <span class="mono">{ messages: [{ text: "..." }] }</span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <strong>Tips</strong>
+          <ul>
+            <li>Preflight <span class="mono">OPTIONS</span> must return 204 with CORS headers.</li>
+            <li>Final node: <em>Respond to Webhook (JSON)</em>.</li>
+            <li>Hard refresh if you update the page (CDN caching).</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <footer>© <span id="year"></span> AI Agent Bot</footer>
+  </div>
 
+  <!-- Floating popup chat -->
   <script type="module">
     import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
 
     const WEBHOOK = 'https://manikantavarma.app.n8n.cloud/webhook/e6e4609b-da9f-46cf-9ca4-6bed3face4d5/chat';
 
-    createChat({
+    // Mount the floating button + popup ("window" mode)
+    const api = createChat({
       webhookUrl: WEBHOOK,
       mode: 'window',
+      loadPreviousSession: true,
       showWelcomeScreen: false,
-      initialMessages: [ '👋 Welcome to the Neo-themed AI Agent!', 'Ask me anything to get started.' ],
-      i18n: {
-        en: {
-          title: 'AI Agent Bot',
-          subtitle: 'Your futuristic assistant',
-          inputPlaceholder: 'Type your question…',
-          getStarted: 'New Chat'
-        }
-      }
+      defaultLanguage: 'en',
+      initialMessages: ['Hi there! 👋', 'Ask me anything about this demo.'],
+      i18n: { en: { title: 'Hi there! 👋', subtitle: 'Start a chat with the AI agent.', inputPlaceholder: 'Type your question…', getStarted: 'New Conversation' } },
     });
-  </script>
 
+    // Populate details
+    document.getElementById('wh').textContent = WEBHOOK;
+    document.getElementById('origin').textContent = location.origin;
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Optional: Expose opener if you want to open via links/buttons
+    window.__openChat = () => api?.open && api.open();
+  </script>
 </body>
 </html>
