@@ -9,195 +9,124 @@
   <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
 
   <style>
-    /* === Global Theme (futuristic / high-contrast) === */
     :root {
-      --bg-1: #0b1020;           /* deep space */
-      --bg-2: #0e1630;           /* darker card */
-      --bg-3: #101935;           /* panel */
-      --txt-1: #e6eaf2;          /* primary text */
-      --txt-2: #a8b2d1;          /* secondary text */
-      --accent-1: #7c3aed;       /* violet */
-      --accent-2: #22d3ee;       /* cyan */
-      --glass: rgba(255,255,255,0.06);
-      --glass-border: rgba(255,255,255,0.08);
-      --radius-xl: 18px;
-      --shadow: 0 12px 30px rgba(0,0,0,0.35);
+      --accent-1: #7c3aed;
+      --accent-2: #22d3ee;
+      --bg-1: #0b1020;
+      --bg-2: #111827;
+      --bg-3: #1e293b;
+      --txt-light: #f1f5f9;
+      --txt-dim: #94a3b8;
     }
 
-    /* Background with subtle animated gradient */
-    body {
-      margin: 0; color: var(--txt-1);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial;
-      background: radial-gradient(1000px 500px at 10% 10%, #0c1534 0%, var(--bg-1) 60%),
-                  linear-gradient(135deg, #0b1228 0%, #0a1022 100%);
-      min-height: 100svh;
+    body { margin:0; font-family: system-ui, sans-serif; background: radial-gradient(circle at 20% 20%, #0f172a, #020617); color: var(--txt-light); }
+
+    /* === Chat widget overrides === */
+    .n8n-chat-window {
+      border-radius: 16px !important;
+      overflow: hidden !important;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6) !important;
+      font-family: system-ui, sans-serif !important;
+    }
+    .n8n-chat-header {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2)) !important;
+      color: white !important;
+      font-weight: 800 !important;
+      padding: 12px 16px !important;
+    }
+    .n8n-chat-title { font-size: 18px !important; }
+    .n8n-chat-subtitle { color: rgba(255,255,255,0.8) !important; }
+
+    .n8n-chat-body {
+      background: linear-gradient(180deg, #0f172a, #1e293b) !important;
+      padding: 12px !important;
     }
 
-    a { color: var(--accent-2); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-
-    /* Header */
-    .nav {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 18px 24px; max-width: 1100px; margin: 0 auto;
-    }
-    .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; letter-spacing: .3px; }
-    .logo {
-      width: 34px; height: 34px; border-radius: 10px; background:
-        conic-gradient(from 210deg, var(--accent-2), var(--accent-1));
-      box-shadow: 0 6px 18px rgba(34,211,238,.25), 0 6px 18px rgba(124,58,237,.25) inset;
-    }
-    .nav a.btn { padding: 10px 14px; border-radius: 12px; background: var(--accent-1); color: white; font-weight: 700; box-shadow: 0 8px 20px rgba(124,58,237,.35); }
-
-    /* Hero */
-    .hero { max-width: 1100px; margin: 22px auto 0; padding: 24px; }
-    .hero-inner { display: grid; grid-template-columns: 1.1fr .9fr; gap: 20px; }
-    .panel { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius-xl); padding: 26px; box-shadow: var(--shadow); backdrop-filter: blur(8px); }
-    .title { font-size: clamp(32px, 5vw, 46px); font-weight: 900; margin: 0 0 10px; letter-spacing: .2px; }
-    .subtitle { color: var(--txt-2); margin: 0; }
-
-    .cta { margin-top: 18px; display: flex; gap: 12px; align-items: center; }
-    .cta .btn { padding: 12px 16px; border-radius: 12px; font-weight: 800; cursor: pointer; border: none; }
-    .btn-primary { background: linear-gradient(135deg, var(--accent-1), #5b21b6); color: white; box-shadow: 0 10px 26px rgba(124,58,237,.4); }
-    .btn-ghost { background: transparent; border: 1px solid var(--glass-border); color: var(--txt-1); }
-
-    .info-list { list-style: none; padding: 0; margin: 10px 0 0; color: var(--txt-2); }
-    .info-list li { margin: 6px 0; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-
-    /* Features grid */
-    .features { max-width: 1100px; margin: 24px auto; padding: 0 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-    .feat { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius-xl); padding: 18px; backdrop-filter: blur(6px); box-shadow: var(--shadow); }
-    .feat h3 { margin: 2px 0 6px; }
-    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; color: #0a0f1f; background: linear-gradient(135deg, var(--accent-2), #60a5fa); }
-
-    /* Footer */
-    footer { color: var(--txt-2); text-align: center; padding: 22px; }
-
-    /* ============ n8n chat deep theme overrides ============ */
-    /* NOTE: class names are stable as of @n8n/chat 0.17.x; this simply beautifies the default UI. */
-    .n8n-chat-toggle {
+    .n8n-chat-message--user {
       background: linear-gradient(135deg, var(--accent-1), #5b21b6) !important;
-      box-shadow: 0 10px 26px rgba(124,58,237,.45), 0 4px 10px rgba(0,0,0,.25) !important;
-      width: 56px !important; height: 56px !important; border-radius: 20px !important;
+      color: white !important;
+      border-radius: 12px 12px 0 12px !important;
+      box-shadow: 0 4px 12px rgba(124,58,237,.4) !important;
     }
-    .n8n-chat-window { border-radius: 18px !important; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,.50) !important; }
-    .n8n-chat-header { background: linear-gradient(135deg, #0f172a, var(--bg-3)) !important; border-bottom: 1px solid var(--glass-border) !important; }
-    .n8n-chat-title { color: #e5e7eb !important; font-weight: 900 !important; letter-spacing: .2px; }
-    .n8n-chat-subtitle { color: #cbd5e1 !important; }
+    .n8n-chat-message--bot {
+      background: #1e293b !important;
+      color: #f1f5f9 !important;
+      border-radius: 12px 12px 12px 0 !important;
+      border: 1px solid rgba(255,255,255,0.08) !important;
+      box-shadow: 0 4px 10px rgba(0,0,0,.25) !important;
+    }
 
-    .n8n-chat-body { background: linear-gradient(180deg, var(--bg-3), #0f172a) !important; }
-    .n8n-chat-message--user { background: linear-gradient(135deg, #0f172a, #111827) !important; color: #ffffff !important; border: 1px solid rgba(255,255,255,.06) !important; }
-    .n8n-chat-message--bot { background: #0b1224 !important; color: #dbeafe !important; border: 1px solid rgba(96,165,250,.18) !important; }
-
-    .n8n-chat-input { background: #0b1020 !important; border: 1px solid var(--glass-border) !important; }
-    .n8n-chat-input textarea { color: #e6eaf2 !important; }
+    .n8n-chat-input {
+      background: #0f172a !important;
+      border-top: 1px solid #1e293b !important;
+      padding: 8px !important;
+    }
+    .n8n-chat-input textarea {
+      background: #1e293b !important;
+      border: none !important;
+      border-radius: 12px !important;
+      color: #f1f5f9 !important;
+      padding: 10px 12px !important;
+    }
     .n8n-chat-input textarea::placeholder { color: #94a3b8 !important; }
-    .n8n-chat-send-button {
-      background: linear-gradient(135deg, var(--accent-2), #60a5fa) !important; color: #0b1020 !important; font-weight: 800 !important;
-      box-shadow: 0 10px 22px rgba(34,211,238,.35) !important;
-    }
 
-    /* Small screens */
-    @media (max-width: 900px) {
-      .hero-inner { grid-template-columns: 1fr; }
-      .features { grid-template-columns: 1fr; }
+    .n8n-chat-send-button {
+      background: linear-gradient(135deg, var(--accent-2), #38bdf8) !important;
+      border-radius: 50% !important;
+      width: 38px !important;
+      height: 38px !important;
+      display: grid !important;
+      place-items: center !important;
+      box-shadow: 0 6px 14px rgba(34,211,238,.45) !important;
     }
-  </style>
+    .n8n-chat-send-button svg { fill: #0f172a !important; }
+
+    .n8n-chat-toggle {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2)) !important;
+      border-radius: 50% !important;
+      box-shadow: 0 10px 22px rgba(124,58,237,.45), 0 6px 14px rgba(34,211,238,.35) !important;
+      width: 56px !important; height: 56px !important;
+    }
+    /* --- Hard overrides for the n8n Chat DOM (strong specificity + !important) --- */
+    :root { --neo-user:#0f172a; --neo-user-text:#fff; --neo-bot:#0b1224; --neo-bot-text:#dbeafe; --neo-accent:#7c3aed; --neo-accent-2:#22d3ee; }
+    :where(body) :where(.n8n-chat-toggle){
+      background: linear-gradient(135deg,var(--neo-accent),#5b21b6)!important; box-shadow:0 10px 26px rgba(124,58,237,.45)!important; width:56px!important;height:56px!important;border-radius:20px!important;
+    }
+    :where(body) :where(.n8n-chat-window){ border-radius:18px!important; overflow:hidden!important; box-shadow:0 30px 60px rgba(0,0,0,.5)!important; border:1px solid rgba(255,255,255,.08)!important; }
+    :where(body) :where(.n8n-chat-header){ background:linear-gradient(135deg,#0f172a,#111827)!important; border-bottom:1px solid rgba(255,255,255,.08)!important; }
+    :where(body) :where(.n8n-chat-title){ color:#e5e7eb!important; font-weight:900!important; letter-spacing:.2px!important; }
+    :where(body) :where(.n8n-chat-subtitle){ color:#cbd5e1!important; }
+    :where(body) :where(.n8n-chat-body){ background:linear-gradient(180deg,#0b1020,#0f172a)!important; }
+    :where(body) :where(.n8n-chat-message--user){ background:var(--neo-user)!important; color:var(--neo-user-text)!important; border:1px solid rgba(255,255,255,.06)!important; border-radius:14px!important; }
+    :where(body) :where(.n8n-chat-message--bot){ background:var(--neo-bot)!important; color:var(--neo-bot-text)!important; border:1px solid rgba(96,165,250,.18)!important; border-radius:14px!important; }
+    :where(body) :where(.n8n-chat-input){ background:#0b1020!important; border:1px solid rgba(255,255,255,.12)!important; }
+    :where(body) :where(.n8n-chat-input textarea){ color:#e6eaf2!important; }
+    :where(body) :where(.n8n-chat-input textarea)::placeholder{ color:#94a3b8!important; }
+    :where(body) :where(.n8n-chat-send-button){ background:linear-gradient(135deg,var(--neo-accent-2),#60a5fa)!important; color:#0b1020!important; font-weight:800!important; box-shadow:0 10px 22px rgba(34,211,238,.35)!important; }
+</style>
 </head>
 <body>
-  <!-- Header -->
-  <nav class="nav">
-    <div class="brand"><span class="logo"></span> <span>AI Agent Bot</span></div>
-    <div class="nav-cta">
-      <a class="btn btn-ghost" href="#how">How it works</a>
-      <a class="btn btn-primary" href="#chat">Open Chat</a>
-    </div>
-  </nav>
 
-  <!-- Hero -->
-  <header class="hero">
-    <div class="hero-inner">
-      <div class="panel">
-        <h1 class="title">Test your <span style="background: linear-gradient(135deg, var(--accent-2), var(--accent-1)); -webkit-background-clip: text; background-clip: text; color: transparent;">n8n AI Agent</span> in a beautiful popup chat.</h1>
-        <p class="subtitle">A minimalist, futuristic interface with high contrast and a floating chat in the bottom-right corner.</p>
-        <div class="cta">
-          <a class="btn btn-primary" href="#chat" onclick="window.__openChat && window.__openChat()">Start chatting</a>
-          <a class="btn btn-ghost" href="https://imsvarma.github.io/webbot/" target="_blank" rel="noopener">Public URL</a>
-        </div>
-        <ul class="info-list" id="how">
-          <li>Widget: <span class="mono">@n8n/chat</span> (CDN, no build step)</li>
-          <li>Webhook: <span class="mono" id="wh"></span></li>
-          <li>Origin allowed in CORS: <span class="mono" id="origin"></span></li>
-        </ul>
-      </div>
-      <div class="panel">
-        <h3 style="margin:0 0 8px;">What you can do</h3>
-        <ul class="info-list">
-          <li>Chat with your workflow output (LLM, tools, APIs).</li>
-          <li>Restore past conversations (session memory).</li>
-          <li>Use a small, elegant popup—no iFrame hassles.</li>
-        </ul>
-        <div style="margin-top:12px;">
-          <span class="pill">Neo theme</span>
-          <span class="pill" style="margin-left:6px; background: linear-gradient(135deg, var(--accent-1), #fb7185);">Gradient accents</span>
-          <span class="pill" style="margin-left:6px; background: linear-gradient(135deg, #22d3ee, #14b8a6);">High contrast</span>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Feature Cards -->
-  <section class="features">
-    <article class="feat">
-      <h3>Zero Build</h3>
-      <p>Use the CDN and <span class="mono">createChat()</span> to mount the widget. No bundlers or frameworks required.</p>
-    </article>
-    <article class="feat">
-      <h3>Secure CORS</h3>
-      <p>Preflight <span class="mono">OPTIONS</span> + JSON <span class="mono">POST</span> ensures your site can talk to n8n safely.</p>
-    </article>
-    <article class="feat">
-      <h3>Customizable</h3>
-      <p>Beautiful gradients, glass panels, and deep theme overrides for the chat window.</p>
-    </article>
-  </section>
-
-  <footer>© <span id="year"></span> AI Agent Bot • Neo-futuristic theme</footer>
-
-  <!-- Floating popup chat -->
   <script type="module">
     import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
 
     const WEBHOOK = 'https://manikantavarma.app.n8n.cloud/webhook/e6e4609b-da9f-46cf-9ca4-6bed3face4d5/chat';
 
-    const api = createChat({
+    createChat({
       webhookUrl: WEBHOOK,
-      mode: 'window',               // small popup with toggle FAB (bottom-right)
-      loadPreviousSession: true,
+      mode: 'window',
       showWelcomeScreen: false,
-      defaultLanguage: 'en',
-      initialMessages: [ 'Hi there! 👋', 'Ask me anything about this demo.' ],
+      initialMessages: [ '👋 Welcome to the Neo-themed AI Agent!', 'Ask me anything to get started.' ],
       i18n: {
         en: {
-          title: 'Hi there! 👋',
-          subtitle: 'Start a chat with the AI agent.',
+          title: 'AI Agent Bot',
+          subtitle: 'Your futuristic assistant',
           inputPlaceholder: 'Type your question…',
-          getStarted: 'New Conversation',
+          getStarted: 'New Chat'
         }
-      },
-      // enableStreaming: true, // if your workflow supports streaming
+      }
     });
-
-    // Expose a handy opener for the CTA button
-    window.__openChat = () => {
-      if (api?.open) api.open();
-    };
-
-    // Populate info
-    document.getElementById('wh').textContent = WEBHOOK;
-    document.getElementById('origin').textContent = location.origin;
-    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
+
 </body>
 </html>
