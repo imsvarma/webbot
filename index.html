@@ -3,54 +3,108 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>My AI Agent – n8n Chat (CDN Embed)</title>
+  <title>AI Agent Bot — Testing</title>
 
   <!-- n8n Chat styles -->
   <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
 
   <style>
-    body { margin: 0; background: linear-gradient(135deg, #0f172a 0%, #1f2937 100%); min-height: 100svh; }
-    .wrap { width: min(100% - 2rem, 900px); margin: 32px auto; color: #e5e7eb; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial; }
-    h1 { margin: 0 0 8px; font-weight: 800; }
-    p { margin: 0 0 18px; color: #9ca3af; }
-    /* Container where the chat will render */
-    #n8n-chat { height: 560px; width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; }
-    footer { position: fixed; bottom: 10px; right: 14px; opacity: .75; font-size: 12px; color: #cbd5e1; }
+    :root {
+      /* High-contrast, modern theme for the chat */
+      --n8n-chat-primary-color: #7c3aed;      /* violet-600 */
+      --n8n-chat-secondary-color: #0b1020;    /* deep navy for headers */
+      --n8n-chat-text-color: #0f172a;         /* slate-900 */
+      --n8n-chat-user-bubble: #0f172a;        /* dark bubble for user */
+      --n8n-chat-user-text: #ffffff;          /* white text on user bubble */
+      --n8n-chat-bot-bubble: #eef2ff;         /* indigo-50 for bot */
+      --n8n-chat-input-bg: #ffffff;           /* white input */
+      --n8n-chat-input-text: #0f172a;         /* dark input text */
+      --n8n-chat-border: #e5e7eb;             /* light borders */
+    }
+
+    /* Page layout */
+    body { margin: 0; background: radial-gradient(1200px 600px at 10% 10%, #0b1020, #0b1228 60%, #0b132c); color: #e5e7eb; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial; }
+    .container { width: min(100% - 2rem, 980px); margin: 48px auto; }
+    .hero { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); backdrop-filter: blur(8px); }
+    .title { margin: 0 0 6px; font-size: clamp(28px, 4vw, 40px); font-weight: 900; letter-spacing: 0.3px; }
+    .subtitle { margin: 0; color: #cbd5e1; }
+
+    .grid { display: grid; grid-template-columns: 1fr; gap: 18px; margin-top: 18px; }
+    .card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 18px; }
+    code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+
+    .list { padding-left: 18px; }
+    .list li { margin: 6px 0; }
+
+    footer { margin: 28px 0 12px; text-align: center; color: #94a3b8; font-size: 12px; }
+
+    /* Make sure the popup is clearly readable */
+    /* The library injects its own DOM; we just ensure contrast if variables aren't applied */
+    .n8n-chat-window, .n8n-chat-container { font-size: 16px; }
+    .n8n-chat-window input, .n8n-chat-window textarea { color: var(--n8n-chat-input-text) !important; background: var(--n8n-chat-input-bg) !important; }
+    .n8n-chat-window ::placeholder { color: #6b7280 !important; }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <h1>AI Agent Chat (n8n)</h1>
-    <p>Embedded via <code>createChat</code> using your production webhook URL.</p>
+  <div class="container">
+    <section class="hero">
+      <h1 class="title">AI Agent Bot — Testing</h1>
+      <p class="subtitle">This page mounts the <span class="mono">@n8n/chat</span> widget and connects it to your n8n workflow via a production webhook.</p>
 
-    <!-- Target container for the chat (the script will mount here) -->
-    <div id="n8n-chat"></div>
-  </main>
+      <div class="grid">
+        <div class="card">
+          <strong>How it’s connected</strong>
+          <ol class="list">
+            <li>The site loads the n8n Chat library from the CDN and initializes it with <span class="mono">createChat()</span>.</li>
+            <li>All messages are sent via <span class="mono">POST</span> to your Webhook: <span class="mono" id="wh"></span></li>
+            <li>n8n handles CORS for this origin <span class="mono" id="origin"></span> and responds with JSON: <span class="mono">{ messages: [{ text: "..." }] }</span>.</li>
+            <li>Click the purple circular button at the bottom-right to open/close the chat popup.</li>
+          </ol>
+        </div>
+        <div class="card">
+          <strong>Tips</strong>
+          <ul class="list">
+            <li>If you don’t see responses, confirm the <span class="mono">OPTIONS</span> preflight returns <span class="mono">204</span> with CORS headers.</li>
+            <li>Ensure your workflow’s final node is <em>Respond to Webhook (JSON)</em> with the structure above.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
 
-  <footer>Powered by n8n</footer>
+    <footer>© <span id="year"></span> n8n Chat demo • Styled for clarity & high contrast</footer>
+  </div>
 
-  <!-- n8n Chat CDN embed (no build step) -->
+  <!-- CDN Embed with floating launcher in the bottom-right corner -->
   <script type="module">
     import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
 
-    // IMPORTANT: This must be your production webhook URL (POST). CORS must allow this site's origin.
     const WEBHOOK = 'https://manikantavarma.app.n8n.cloud/webhook/e6e4609b-da9f-46cf-9ca4-6bed3face4d5/chat';
 
-    // Minimal working config. Adjust as needed.
+    // Floating launcher with popup window (default 'window' mode renders a toggle + small chat window)
     createChat({
       webhookUrl: WEBHOOK,
-      target: '#n8n-chat',      // Mount into the div above
-      mode: 'fullscreen',       // Use full size of the target container
+      // Mount target defaults to '#n8n-chat'; not needed in window mode
+      mode: 'window',               // small popup
       loadPreviousSession: true,
       showWelcomeScreen: false,
-      initialMessages: [ 'Hi there! 👋', 'Ask me anything.' ],
-      // webhookConfig: { method: 'POST', headers: {} },
-      // enableStreaming: false,
+      defaultLanguage: 'en',
+      initialMessages: [ 'Hi there! 👋', 'Ask me anything about this demo.' ],
+      i18n: {
+        en: {
+          title: 'Hi there! 👋',
+          subtitle: 'Start a chat with the AI agent.',
+          inputPlaceholder: 'Type your question…',
+          getStarted: 'New Conversation',
+        }
+      }
+      // You can enable streaming if your workflow supports it
+      // enableStreaming: true,
     });
 
-    // Tiny debug helper
-    console.log('[n8n-chat] origin =', location.origin);
-    console.log('[n8n-chat] webhook =', WEBHOOK);
+    // Populate info in the hero section
+    document.getElementById('wh').textContent = WEBHOOK;
+    document.getElementById('origin').textContent = location.origin;
+    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
