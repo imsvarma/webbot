@@ -3,94 +3,127 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AI Agent Bot — Live</title>
+  <title>AI Agent Bot — Responsive</title>
 
-  <!-- n8n Chat styles (required for widget) -->
+  <!-- n8n Chat styles (required) -->
   <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
 
   <style>
-    /* Reset + base */
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial; color: #e5e7eb; background: radial-gradient(900px 500px at 10% 10%, #0c1534 0%, #0b1020 60%), linear-gradient(135deg, #0a1022, #0a0f1f); }
-
-    /* Layout */
-    .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 20px 80px; }
-    .hero { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 26px; backdrop-filter: blur(8px); box-shadow: 0 12px 30px rgba(0,0,0,.35); }
-    .title { margin: 0 0 8px; font-weight: 900; font-size: clamp(28px, 4vw, 44px); letter-spacing: .2px; }
-    .subtitle { margin: 0 0 16px; color: #cbd5e1; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-    .card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 16px; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-    ul { margin: 8px 0 0; padding-left: 18px; }
-    footer { text-align:center; color:#94a3b8; padding: 24px 0; }
-
-    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
-
-    /* Widget theming via variables (supported by @n8n/chat) */
+    /* ==== Responsive, mobile-first layout ==== */
     :root {
-      --n8n-chat-primary-color: #7c3aed; /* FAB & accents */
-      --n8n-chat-secondary-color: #0b1020; /* header bg */
+      --bg-1: #0b1020; --bg-2: #0e1630; --txt-1:#e7eaf3; --txt-2:#a8b2d1;
+      --accent-1:#7c3aed; --accent-2:#22d3ee; --glass: rgba(255,255,255,.06); --glass-b:#ffffff14; --radius: 18px;
+    }
+
+    html, body { height: 100%; }
+    body { margin: 0; color: var(--txt-1); background: radial-gradient(900px 500px at 10% 10%, #0c1534 0%, var(--bg-1) 60%), linear-gradient(135deg, #0a1022, #0a0f1f); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial; }
+
+    .wrap { width: min(100% - 2rem, 1200px); margin: 0 auto; padding: clamp(16px, 3vw, 28px) clamp(12px, 3vw, 22px) calc(24px + env(safe-area-inset-bottom)); }
+
+    .hero { display: grid; gap: 16px; grid-template-columns: 1fr; }
+    .panel { background: var(--glass); border: 1px solid var(--glass-b); border-radius: var(--radius); padding: clamp(14px, 2.5vw, 26px); backdrop-filter: blur(8px); box-shadow: 0 12px 30px rgba(0,0,0,.35); }
+
+    .title { margin: 0 0 6px; font-size: clamp(24px, 6vw, 46px); font-weight: 900; letter-spacing: .2px; }
+    .subtitle { margin: 0; color: var(--txt-2); font-size: clamp(14px, 2.8vw, 18px); }
+
+    .grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: clamp(12px, 3vw, 18px); }
+    .card { background: var(--glass); border: 1px solid var(--glass-b); border-radius: 16px; padding: clamp(12px, 2.5vw, 18px); }
+
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; word-break: break-all; }
+    ul { margin: 8px 0 0; padding-left: clamp(16px, 3vw, 22px); }
+
+    .features { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: clamp(12px, 3vw, 18px); }
+
+    footer { text-align:center; color: var(--txt-2); padding: clamp(14px, 3.5vw, 22px) 0 calc(10px + env(safe-area-inset-bottom)); }
+
+    /* Tablet */
+    @media (min-width: 640px) {
+      .grid { grid-template-columns: 1fr 1fr; }
+      .features { grid-template-columns: 1fr 1fr; }
+    }
+    /* Desktop */
+    @media (min-width: 980px) {
+      .hero { grid-template-columns: 1.1fr .9fr; }
+      .features { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    /* ==== Widget theme variables (for readability on all screens) ==== */
+    :root {
+      --n8n-chat-primary-color: var(--accent-1);
+      --n8n-chat-secondary-color: #0b1020;
       --n8n-chat-text-color: #0f172a;
-      --n8n-chat-user-bubble: #0f172a;
-      --n8n-chat-bot-bubble: #eef2ff;
-      --n8n-chat-input-bg: #ffffff;
-      --n8n-chat-input-text: #0f172a;
+      --n8n-chat-user-bubble: #0f172a;        /* dark user bubble */
+      --n8n-chat-bot-bubble: #eef2ff;         /* light bot bubble */
+      --n8n-chat-input-bg: #ffffff;           /* white input */
+      --n8n-chat-input-text: #0f172a;         /* dark input text */
       --n8n-chat-border: #e5e7eb;
     }
+
+    /* Ensure FAB sits above safe areas on mobile */
+    .n8n-chat-toggle { margin-bottom: max(12px, env(safe-area-inset-bottom)); }
   </style>
 </head>
 <body>
   <div class="wrap">
     <section class="hero">
-      <h1 class="title">AI Agent Bot — Testing</h1>
-      <p class="subtitle">Floating chat is live (bottom-right). This page explains how it connects to your n8n workflow.</p>
-      <div class="grid">
-        <div class="card">
-          <strong>How it’s connected</strong>
-          <ul>
-            <li>Widget loaded from CDN and initialized with <span class="mono">createChat()</span>.</li>
-            <li>Webhook (POST): <span class="mono" id="wh"></span></li>
-            <li>Allowed origin (CORS): <span class="mono" id="origin"></span></li>
-            <li>Response JSON shape: <span class="mono">{ messages: [{ text: "..." }] }</span></li>
-          </ul>
+      <div class="panel">
+        <h1 class="title">AI Agent Bot — Testing</h1>
+        <p class="subtitle">Responsive demo that works great on mobile, tablet, and desktop. Chat popup is in the bottom‑right.</p>
+      </div>
+
+      <div class="panel">
+        <div class="grid">
+          <div class="card">
+            <strong>Connection details</strong>
+            <ul>
+              <li>Webhook: <span class="mono" id="wh"></span></li>
+              <li>Origin allowed (CORS): <span class="mono" id="origin"></span></li>
+              <li>Shape: <span class="mono">{ messages: [{ text: "..." }] }</span></li>
+            </ul>
+          </div>
+          <div class="card">
+            <strong>Tips</strong>
+            <ul>
+              <li>Preflight <span class="mono">OPTIONS</span> → 204 with CORS headers.</li>
+              <li>Last node → <em>Respond to Webhook (JSON)</em>.</li>
+              <li>Hard refresh after updates.</li>
+            </ul>
+          </div>
         </div>
-        <div class="card">
-          <strong>Tips</strong>
-          <ul>
-            <li>Preflight <span class="mono">OPTIONS</span> must return 204 with CORS headers.</li>
-            <li>Final node: <em>Respond to Webhook (JSON)</em>.</li>
-            <li>Hard refresh if you update the page (CDN caching).</li>
-          </ul>
+
+        <div class="features">
+          <div class="card"><b>Mobile-first</b><br/>Type scales with <span class="mono">clamp()</span>, layouts stack on phones.</div>
+          <div class="card"><b>Tablet-ready</b><br/>Two-column content kicks in at 640px.</div>
+          <div class="card"><b>Desktop-polished</b><br/>Hero split and three-column features at 980px.</div>
         </div>
       </div>
     </section>
-    <footer>© <span id="year"></span> AI Agent Bot</footer>
+
+    <footer>© <span id="year"></span> AI Agent Bot — Responsive</footer>
   </div>
 
-  <!-- Floating popup chat -->
+  <!-- Floating popup chat (works across devices) -->
   <script type="module">
     import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
 
     const WEBHOOK = 'https://manikantavarma.app.n8n.cloud/webhook/e6e4609b-da9f-46cf-9ca4-6bed3face4d5/chat';
 
-    // Mount the floating button + popup ("window" mode)
     const api = createChat({
       webhookUrl: WEBHOOK,
-      mode: 'window',
+      mode: 'window',                 // compact popup, great for mobile too
       loadPreviousSession: true,
       showWelcomeScreen: false,
       defaultLanguage: 'en',
-      initialMessages: ['Hi there! 👋', 'Ask me anything about this demo.'],
+      initialMessages: ['Hi there! 👋', 'Ask me anything.'],
       i18n: { en: { title: 'Hi there! 👋', subtitle: 'Start a chat with the AI agent.', inputPlaceholder: 'Type your question…', getStarted: 'New Conversation' } },
     });
 
-    // Populate details
+    // Page info
     document.getElementById('wh').textContent = WEBHOOK;
     document.getElementById('origin').textContent = location.origin;
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Optional: Expose opener if you want to open via links/buttons
+    // Optional: helper to open programmatically
     window.__openChat = () => api?.open && api.open();
   </script>
 </body>
